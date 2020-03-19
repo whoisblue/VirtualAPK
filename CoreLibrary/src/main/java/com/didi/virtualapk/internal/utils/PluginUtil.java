@@ -204,7 +204,7 @@ public class PluginUtil {
                 }
             }
             
-            findAndCopyNativeLib(zipfile, context, "armeabi", packageInfo, nativeLibDir);
+            findAndCopyNativeLib(zipfile, context, "armeabi-v7a", packageInfo, nativeLibDir);
     
         } finally {
             zipfile.close();

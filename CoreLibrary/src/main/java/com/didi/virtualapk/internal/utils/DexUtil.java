@@ -36,7 +36,7 @@ public class DexUtil {
     public static void insertDex(DexClassLoader dexClassLoader, ClassLoader baseClassLoader, File nativeLibsDir) throws Exception {
         Object baseDexElements = getDexElements(getPathList(baseClassLoader));
         Object newDexElements = getDexElements(getPathList(dexClassLoader));
-        Object allDexElements = combineArray(baseDexElements, newDexElements);
+        Object allDexElements = combineArray(newDexElements, baseDexElements);
         Object pathList = getPathList(baseClassLoader);
         Reflector.with(pathList).field("dexElements").set(allDexElements);
 
@@ -72,7 +72,7 @@ public class DexUtil {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             Reflector reflector = Reflector.with(basePathList);
             List<File> nativeLibraryDirectories = reflector.field("nativeLibraryDirectories").get();
-            nativeLibraryDirectories.add(nativeLibsDir);
+            nativeLibraryDirectories.add(0, nativeLibsDir);
 
             Object baseNativeLibraryPathElements = reflector.field("nativeLibraryPathElements").get();
             final int baseArrayLength = Array.getLength(baseNativeLibraryPathElements);
@@ -106,8 +106,8 @@ public class DexUtil {
             File[] nativeLibraryDirectories = reflector.get();
             final int N = nativeLibraryDirectories.length;
             File[] newNativeLibraryDirectories = new File[N + 1];
-            System.arraycopy(nativeLibraryDirectories, 0, newNativeLibraryDirectories, 0, N);
-            newNativeLibraryDirectories[N] = nativeLibsDir;
+            newNativeLibraryDirectories[0] = nativeLibsDir;
+            System.arraycopy(nativeLibraryDirectories, 0, newNativeLibraryDirectories, 1, N);
             reflector.set(newNativeLibraryDirectories);
         }
     }
